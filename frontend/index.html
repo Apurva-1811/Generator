@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <form action="" id="quotesforday">
+      <div class="col-25">
+        <label for="quote">Quote</label>
+      </div>
+      <div class="row">
+        <div class="col-75">
+          <textarea id="quote" name="Quote" placeholder="Write something.." style="height:200px"></textarea>
+        </div>
+      </div>
+      <div class="col-25">
+        <label for="name">Name</label>
+      </div>
+      <div class="row">
+        <div class="col-75">
+          <input type="text" id="name" name="Name" placeholder="Writter's Name">
+        </div>
+      </div>
+
+      <div class="row">
+        <input type="submit" value="Submit">
+      </div>
+    </form>
+    <div class="row">
+    <input type="button" onclick="BtnClick()" value="click me" />
+    </div>
+  </div>
+
+
+
+
+  <script>
+
+    // let emptyArray = [];
+    let quote;
+    let name;
+    document.getElementById('quotesforday').addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      quote = document.getElementById("quote").value;
+      name = document.getElementById('name').value;
+
+      const data_obj = {
+        Quote: quote,
+        Name: name
+      };
+      const data = JSON.stringify(data_obj)
+      console.log(data);
+
+      var xhr = new XMLHttpRequest() //object creation
+
+      xhr.open("POST", "http://localhost:3500/createPost")
+      xhr.setRequestHeader("Content-Type", "application/json") //
+
+      xhr.onload = function () {
+        if (xhr.status === 201) {
+          console.log("Request successfull....")
+          console.log(xhr.responseText)
+          console.log(JSON.parse(xhr.responseText))
+        } else {
+          console.log("failed", xhr.status)
+        }
+      }
+
+      xhr.onerror = function () {
+        console.log("Request failed......")
+      }
+
+      xhr.send(data)
+
+    })
+    function BtnClick() {
+      $.ajax({
+        url: "http://localhost:3500/getAllPost",
+        method: "GET",
+        success: function (data) {
+          for (let index = 0; index < data.length; index++) {
+            document.write(data[index].id + "=>" + data[index].Quote +"</br>" +"  written by  "+ data[index].Name + "</br>")
+
+          }
+        },
+        error: function (err) {
+          console.error(err);
+        }
+
+      })
+
+
+    }
+
+
+  </script>
+</body>
+
+</html>
